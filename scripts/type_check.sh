@@ -1,1 +1,1 @@
-poetry run mypy pypackage_template
+poetry run mypy liquidbase

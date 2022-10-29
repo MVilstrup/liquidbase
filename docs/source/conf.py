@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'pypackage_template'
+project = 'liquidbase'
 copyright = '2021, Mikkel Vilstrup'
 author = 'Mikkel Vilstrup'
 

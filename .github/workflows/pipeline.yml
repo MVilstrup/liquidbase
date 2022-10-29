@@ -13,7 +13,7 @@ jobs: # jobs. We will have two jobs (test and publish) with multiple steps.
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.9, 3.10]
 
     steps:
       - uses: actions/checkout@v2
@@ -28,13 +28,13 @@ jobs: # jobs. We will have two jobs (test and publish) with multiple steps.
         run: poetry install
       - name: Pylint # Run pylint static analysis
         run: |
-          poetry run pylint pypackage_template
+          poetry run pylint liquidbase
       - name: mypy  # Run mypy static analysis
         run: |
-          poetry run mypy -p pypackage_template
+          poetry run mypy -p liquidbase
       - name: Pytest # Run pytest
         run: |
-          poetry run coverage run -m --source=pypackage_template pytest tests
+          poetry run coverage run -m --source=liquidbase pytest tests
           poetry run coverage report
       - name: Coveralls # Send coverage metrics to coveralls.io
         run: poetry run coveralls
@@ -51,12 +51,12 @@ jobs: # jobs. We will have two jobs (test and publish) with multiple steps.
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: "3.8"
+          python-version: "3.9"
       - name: Run image
         uses: abatilo/actions-poetry@v2.0.0
         with:
           poetry-version: 1.0.10
-      - name: Build and publish # publish pypackage_template to PyPI
+      - name: Build and publish # publish liquidbase to PyPI
         env:
           PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
           PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
