@@ -15,7 +15,7 @@ Pympler = "^1.0.1"
 asciitree = "^0.3.3"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^7.2"
 flake8 = "^5.0.4"
 mypy = "^0.982"
 black = {version = "^22.10.0", allow-prereleases = true}
