@@ -1,20 +1,24 @@
 [tool.poetry]
-name = "pypackage_template"
-version = "0.1.0"
+name = "liquidbase"
+version = "0.1.2"
 description = ""
 authors = ["Mikkel Vilstrup <mikkel@vilstrup.dk>"]
 
 [tool.poetry.dependencies]
-python = ">=3.6.1,<4.0"
-coveralls = "^3.2.0"
+python = ">=3.9,<3.11"
+dill = "^0.3.6"
+pandas = "^1.5.1"
+numpy = "^1.23.4"
+orjson = "^3.8.1"
+SQLAlchemy = "^1.4.42"
+Pympler = "^1.0.1"
+asciitree = "^0.3.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
-coverage = "^5.5"
-mypy = "^0.910"
-pre-commit = "^2.14.0"
-pylint = "^2.9.6"
-Sphinx = "^4.1.2"
+flake8 = "^5.0.4"
+mypy = "^0.982"
+black = {version = "^22.10.0", allow-prereleases = true}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

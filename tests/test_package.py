@@ -1,4 +1,4 @@
-from pypackage_template import __version__
+from liquidbase import __version__
 
 
 def test_version():
