@@ -1,8 +1,5 @@
 import sys
 from numbers import Number
-from collections import deque
-from collections.abc import Set, Mapping
-import sys
 import gc
 
 ZERO_DEPTH_BASES = (str, bytes, Number, range, bytearray)

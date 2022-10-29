@@ -29,9 +29,9 @@ jobs: # jobs. We will have two jobs (test and publish) with multiple steps.
       - name: Pylint # Run pylint static analysis
         run: |
           poetry run pylint liquidbase
-      - name: mypy  # Run mypy static analysis
-        run: |
-          poetry run mypy -p liquidbase
+#      - name: mypy  # Run mypy static analysis
+#        run: |
+#          poetry run mypy -p liquidbase
       - name: Pytest # Run pytest
         run: |
           poetry run coverage run -m --source=liquidbase pytest tests
