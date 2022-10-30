@@ -24,11 +24,11 @@ jobs: # jobs. We will have two jobs (test and publish) with multiple steps.
         uses: abatilo/actions-poetry@v2.0.0
         with:
           poetry-version: 1.1.8
-      - name: Install dependencies # install all dependencies
-        run: poetry install
-      - name: Pylint # Run pylint static analysis
-        run: |
-          poetry run pylint liquidbase
+#      - name: Install dependencies # install all dependencies
+#        run: poetry install
+#      - name: Pylint # Run pylint static analysis
+#        run: |
+#          poetry run pylint liquidbase
 #      - name: mypy  # Run mypy static analysis
 #        run: |
 #          poetry run mypy -p liquidbase

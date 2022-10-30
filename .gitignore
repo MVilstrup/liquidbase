@@ -28,6 +28,7 @@ tags
 *.eggs/
 .installed.cfg
 *.egg-info
+.mypy_cache/
 
 # Unittest and coverage
 htmlcov/*
