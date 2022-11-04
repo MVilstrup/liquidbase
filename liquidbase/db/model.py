@@ -1,27 +1,25 @@
 import uuid
-from datetime import datetime, timezone
 
 import orjson as json
-
-from sqlalchemy import (PickleType, Text, Column, ForeignKey, func,
-                        create_engine, event, TypeDecorator, types, TIMESTAMP, DATETIME)
-from sqlalchemy.orm import relationship, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import (Column, ForeignKey, PickleType, Text, TypeDecorator,
+                        create_engine, event, types)
 from sqlalchemy.engine import Engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm.decl_api import DeclarativeMeta
 
-Base = declarative_base()
+Base: DeclarativeMeta = declarative_base()
 
 
-@event.listens_for(Engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
+@event.listens_for(Engine, 'connect')
+def set_sqlite_pragma(dbapi_connection, _):
     cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.execute('PRAGMA foreign_keys=ON')
     dbapi_connection.isolation_level = None
     cursor.close()
 
 
 class Json(TypeDecorator):
-
     @property
     def python_type(self):
         return object
@@ -45,22 +43,26 @@ class Json(TypeDecorator):
 class Store(Base):
     __tablename__ = 'Store'
     id = Column(Text, primary_key=True)
-    parent_id = Column(Text, ForeignKey("Store.id"), nullable=True)
+    parent_id = Column(Text, ForeignKey('Store.id'), nullable=True)
     content = Column(Json)
-    stamp = Column(Text, default=lambda: str(uuid.uuid4()), onupdate=lambda: str(uuid.uuid4()))
+    stamp = Column(
+        Text, default=lambda: str(uuid.uuid4()), onupdate=lambda: str(uuid.uuid4())
+    )
 
-    blobs = relationship("Blob", lazy="joined")
-    children = relationship("Store", lazy='select')
+    blobs = relationship('Blob', lazy='joined')
+    children = relationship('Store', lazy='select')
 
 
 class Blob(Base):
     __tablename__ = 'Blob'
 
     id = Column(Text, primary_key=True)
-    parent_id = Column(Text, ForeignKey("Store.id", ondelete="CASCADE"), nullable=False)
+    parent_id = Column(Text, ForeignKey('Store.id', ondelete='CASCADE'), nullable=False)
     content = Column(PickleType)
     hash = Column(PickleType)
-    stamp = Column(Text, default=lambda: str(uuid.uuid4()), onupdate=lambda: str(uuid.uuid4()))
+    stamp = Column(
+        Text, default=lambda: str(uuid.uuid4()), onupdate=lambda: str(uuid.uuid4())
+    )
 
 
 def create_model(location):

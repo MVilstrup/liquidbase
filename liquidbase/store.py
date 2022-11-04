@@ -1,12 +1,10 @@
-import datetime
-
 import orjson as json
+
 from liquidbase.db.liquid_db import LiquidDB
 
 
 class Store:
-
-    def __init__(self, location, parent=None, db=None, _id="", _data=None):
+    def __init__(self, location, parent=None, db=None, _id='', _data=None):
         self._location = location
         self._parent = parent
         self.ID = _id
@@ -27,7 +25,7 @@ class Store:
 
     @property
     def is_root(self):
-        return self._parent is None and self.ID == ""
+        return self._parent is None and self.ID == ''
 
     @property
     def _parent_id(self):
@@ -48,7 +46,7 @@ class Store:
         return False
 
     def _child(self, child_id, **value):
-        child_id = f"{self.ID}.{child_id}" if self.ID else child_id
+        child_id = f'{self.ID}.{child_id}' if self.ID else child_id
         return Store(self, parent=self, db=self._db, _id=child_id, _data=value)
 
     def __populate__(self):
@@ -82,7 +80,11 @@ class Store:
         return self
 
     def save(self):
-        to_update = {key: self._content[key] for key in self._updated.keys() if self._updated[key]}
+        to_update = {
+            key: self._content[key]
+            for key in self._updated.keys()
+            if self._updated[key]
+        }
         to_delete = [key for key, value in self._deleted.items() if value]
 
         store_keys = []
@@ -95,7 +97,9 @@ class Store:
             to_update.pop(key)
 
         if not self._db.store_exists(self.ID):
-            self.__update_stamp__(self._db.create(self.ID, self._parent_id, **to_update))
+            self.__update_stamp__(
+                self._db.create(self.ID, self._parent_id, **to_update)
+            )
         else:
             self.__update_stamp__(self._db.set(self.ID, **to_update))
             self.__update_stamp__(self._db.unset(self.ID, *to_delete))
@@ -134,7 +138,6 @@ class Store:
 
     def update(self, other):
         self.__populate__()
-        assert isinstance(other, dict), "Can only update with a dictionary"
         for key, value in other.items():
             if isinstance(value, dict):
                 value = self._child(key, **value)
@@ -150,6 +153,8 @@ class Store:
 
     def tree(self):
         from asciitree import LeftAligned
+
+        return LeftAligned()
 
     def __setitem__(self, name, value):
         self.__populate__()
@@ -175,7 +180,7 @@ class Store:
         self.__populate__()
         info = {}
         for name, value in self._content.items():
-            if name in ["__id__", "__root__"]:
+            if name in ['__id__', '__root__']:
                 continue
 
             try:
@@ -187,4 +192,4 @@ class Store:
         return f"Store({json.dumps(info).decode('utf-8')})"
 
     def __str__(self):
-        return f"Store"
+        return f'Store'

@@ -1,16 +1,16 @@
-import pickle
+import pickle  # nosec
 from uuid import uuid4
 
+import dill  # nosec
+import numpy as np
 import orjson as json
 import pandas as pd
-import numpy as np
-import dill
-from pandas.api.types import is_string_dtype, is_numeric_dtype, is_bool_dtype
+from pandas.api.types import is_bool_dtype, is_numeric_dtype, is_string_dtype
 
 from liquidbase.api.errors import StoreIDAlreadyExists
 from liquidbase.api.memory import get_size
 from liquidbase.constants import Location, generate_id
-from liquidbase.db.model import Store, Blob, create_model
+from liquidbase.db.model import Blob, Store, create_model
 
 
 class LiquidDB:
@@ -31,7 +31,7 @@ class LiquidDB:
         try:
             if pd.isna(value) or value is None:
                 return Location.store, None
-        except:
+        except:  # nosec
             pass
 
         # Make blob if data takes too up much space
@@ -40,12 +40,14 @@ class LiquidDB:
             return Location.blob, value
 
         # Store if simple typed
-        simple_typed = any([
-            isinstance(value, (str, int, float, bool)),
-            is_string_dtype(value),
-            is_numeric_dtype(value),
-            is_bool_dtype(value)
-        ])
+        simple_typed = any(
+            [
+                isinstance(value, (str, int, float, bool)),
+                is_string_dtype(value),
+                is_numeric_dtype(value),
+                is_bool_dtype(value),
+            ]
+        )
 
         if simple_typed:
             return Location.store, value
@@ -80,12 +82,12 @@ class LiquidDB:
 
     def create(self, ID, parent_id=None, **data):
         if self.store_exists(ID):
-            raise StoreIDAlreadyExists(f"{ID} already exists")
+            raise StoreIDAlreadyExists(f'{ID} already exists')
 
         content, children, blobs = self._divide_data(data)
 
-        if not parent_id and "." in ID:
-            parent_id = ".".join(ID.split(".")[:-1])
+        if not parent_id and '.' in ID:
+            parent_id = '.'.join(ID.split('.')[:-1])
 
         with self.session as session:
             # Add primary value
@@ -94,7 +96,14 @@ class LiquidDB:
             # Add all Blobs
             for key, blob in blobs.items():
                 pickled = pickle.dumps(blob)
-                session.add(Blob(id=generate_id(ID, key), parent_id=ID, content=pickled, hash=hash(pickled)))
+                session.add(
+                    Blob(
+                        id=generate_id(ID, key),
+                        parent_id=ID,
+                        content=pickled,
+                        hash=hash(pickled),
+                    )
+                )
 
         # Add all children with new session
         for key, child in children.items():
@@ -126,12 +135,12 @@ class LiquidDB:
                 return record.content[name], record.stamp
 
             for blob in record.blobs:
-                blob_key = blob.id.split(".")[-1]
+                blob_key = blob.id.split('.')[-1]
                 if name == blob_key:
                     return blob.content, record.stamp
 
             for child in record.children:
-                child_key = child.id.split(".")[-1]
+                child_key = child.id.split('.')[-1]
                 if name == child_key:
                     return child.content, record.stamp
 
@@ -145,13 +154,13 @@ class LiquidDB:
 
             # Fetch all children:
             for child in record.children:
-                child_key = child.id.split(".")[-1]
+                child_key = child.id.split('.')[-1]
                 content[child_key] = child.content
 
             # Fetch all blobs
             for blob in record.blobs:
-                blob_key = blob.id.split(".")[-1]
-                content[blob_key] = pickle.loads(blob.content)
+                blob_key = blob.id.split('.')[-1]
+                content[blob_key] = pickle.loads(blob.content)  # nosec
 
             return content, record.stamp
 
@@ -187,7 +196,9 @@ class LiquidDB:
 
                     pickled = pickle.dumps(value)
                     pickle_hash = hash(pickled)
-                    session.add(Blob(id=new_id, parent_id=ID, content=pickled, hash=pickle_hash))
+                    session.add(
+                        Blob(id=new_id, parent_id=ID, content=pickled, hash=pickle_hash)
+                    )
                 else:
                     raise Exception()
 
@@ -203,7 +214,9 @@ class LiquidDB:
             if record is None:
                 raise Exception()
 
-            record.content = {key: value for key, value in record.content.items() if key not in fields}
+            record.content = {
+                key: value for key, value in record.content.items() if key not in fields
+            }
 
             # Handle if one of the fields is a store on its own
             IDs = {generate_id(ID, field) for field in fields}

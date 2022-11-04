@@ -1,21 +1,40 @@
+# Setup Standard
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
-      - id: check-yaml
-      - id: debug-statements
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
+      - id: check-yaml # Check all yaml is correctly formatted
+      - id: check-json # Check all json is correctly formatted
+      - id: check-xml # Check all xml is correctly formatted
+      - id: check-toml # Check all toml is correctly formatted
+      - id: double-quote-string-fixer # Replaces all double-quote strings with single ones.
+      - id: check-merge-conflict # Makes sure that you do not try to merge any unresolved conflicts.
+      - id: end-of-file-fixer # The hook adds an empty string at the end of each file
+      - id: check-ast # checks that your .py files are valid Python files.
+      - id: trailing-whitespace # The hook removes extra whitespaces in your code
+      - id: check-added-large-files # The hook checks that you don’t commit any vast files
   - repo: local
     hooks:
-      - id: pylint
-        name: pylint
-        entry: pylint
-        exclude: ^(tests/|docs/|scripts/|.github/)
-        language: system
+      - id: dodgy
+        name: dodgy
+        description: 'Dodgy is a tool that looks for passwords and other misshaps in the code'
+        entry: dodgy
+        language: python
         types: [python]
+      - id: bandit
+        name: bandit
+        description: 'Bandit looks for common security problems in python code'
+        entry: bandit
+        language: python
+        types: [ python ]
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.790
     hooks:
       - id: mypy
         exclude: ^(tests/|docs/|scripts/)
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        name: isort (python)

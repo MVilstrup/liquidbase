@@ -1,6 +1,6 @@
+import gc
 import sys
 from numbers import Number
-import gc
 
 ZERO_DEPTH_BASES = (str, bytes, Number, range, bytearray)
 
@@ -15,7 +15,7 @@ class ObjectSize:
         return str(self)
 
     def __str__(self):
-        return f"{self.mb}MB"
+        return f'{self.mb}MB'
 
     def __int__(self):
         return int(self.mb)
